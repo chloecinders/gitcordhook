@@ -1,0 +1,19 @@
+{
+	"name": "discord-webhook",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3",
+		"wrangler": "^4.14.4"
+	},
+	"dependencies": {
+		"@octokit/webhooks-types": "^7.6.1",
+		"@types/node": "^22.15.18",
+		"discord-api-types": "^0.38.5"
+	}
+}
