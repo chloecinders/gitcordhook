@@ -51,6 +51,12 @@ function runHandler(githubEvent: string, data: WebhookEvent): WebhookBody {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+		if (request.method == "GET") {
+			return new Response(
+				"Hey you aren't a webhook! This page is only for webhooks! See https://github.com/surgedevs/gitcordhook for more info :D"
+			);
+		}
+
 		const webhookUrl = new URL(request.url);
 		const discordWebhook = webhookUrl.pathname.replace(
 			/^\/https:\/\//,
