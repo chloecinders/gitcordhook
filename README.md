@@ -19,7 +19,7 @@ This project is in it's earliest stages! Currently only issue opening is support
 4. Look over to your Discord server: Go into the server settings
 5. Under the Integrations tab go to Webhooks add a new one, or open an existing one and copy the webhook URL
 6. Now back in the GitHub webhook settings, at Payload URL add "https://discord-webhook.surgedevs.com/" then paste in your Discord webhook URL
-7. The payload URL should now look something like `https://discord-webhook.surgedevs.com/https://discord.com/(webhookhash)/(webhookid)`
+7. The payload URL should now look something like `https://gitcordhook.surgedevs.com/https://discord.com/(webhookhash)/(webhookid)`
 8. Now change the content type to application/json
 9. Select which events you want to trigger the webhook (either all or select ones)
 10. Click add (or save) and you are done!
