@@ -2,8 +2,8 @@ import {
 	MessageFlags,
 	RESTPostAPIWebhookWithTokenJSONBody,
 } from "discord-api-types/v10";
-import { WebhookBodyWithHeaders } from "./types";
-import { DEFAULT_USER } from "./worker";
+import { WebhookBodyWithHeaders } from "../types";
+import { DEFAULT_USER } from "../worker";
 
 type WebhookResponse = {
 	success: boolean;
@@ -50,4 +50,10 @@ export async function send(
 		success: response.ok,
 		body: await response.text(),
 	};
+}
+
+export function getTimestamp(timeString: string): string {
+	const date = new Date(timeString);
+
+	return `<t:${Math.floor(date.getTime()) / 1000}:f>`;
 }
