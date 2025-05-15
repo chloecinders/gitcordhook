@@ -1,13 +1,11 @@
 import { IssuesEvent, IssuesOpenedEvent } from "@octokit/webhooks-types";
-import { send } from "../discord";
 import {
 	ButtonStyle,
 	ComponentType,
-	MessageFlags,
-	RESTPostAPIWebhookWithTokenJSONBody,
 	SeparatorSpacingSize,
 } from "discord-api-types/v10";
 import { WebhookBody } from "../types";
+import { getGithubUser } from "../utils/data";
 
 export default function handleIssues(data: IssuesEvent): WebhookBody {
 	switch (data.action) {
@@ -23,8 +21,7 @@ function issueOpen(data: IssuesOpenedEvent): WebhookBody {
 	const issueBody = (data.issue.body || "").slice(0, 1000);
 
 	return {
-		username: data.sender.name || data.sender.login,
-		avatar_url: data.sender.avatar_url,
+		...getGithubUser(data),
 		components: [
 			{
 				type: ComponentType.TextDisplay,
