@@ -9,3 +9,8 @@ export function getGithubUser(data: WebhookEvent & { sender: any }): {
 		avatar_url: data.sender.avatar_url,
 	};
 }
+
+export function parseGithubContent(content: string): string {
+	// @TODO: Parse string for github issue/PR/whatever links, turn them into hypertext markup
+	return content;
+}

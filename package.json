@@ -8,6 +8,7 @@
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
+		"esbuild": "^0.25.4",
 		"typescript": "^5.8.3",
 		"wrangler": "^4.14.4"
 	},

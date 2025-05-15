@@ -6,7 +6,7 @@ An attempt to make GitHub Webhooks not boring.
 GitCordHook is a webhook proxy that you add infront of your Discord webhook url inside the GitHub webhook settings, automatically transforming boring embeds with lacking information into rich messages using components V2.
 
 ## How does it work?
-GitCordHook under the hood is just your average worker (Officially its specifically a Cloudflare worker). You put it between GitHub and Discord, it takes in the data from GitHub, transforms it, then sends it to Discord. Simple!
+GitCordHook under the hood is just your average worker (Officially its specifically a Cloudflare worker). You put it between GitHub and Discord, it takes in the data from GitHub, transforms it, then sends it to Discord. Simple! This Repository automatically updates the official webhook, but if you have privacy concerns self hosting is totally an option too!
 
 ## Which events are currently supported?
 This project is in it's earliest stages! Currently only issue opening is supported. Everything unsupported is automatically sent to Discords own GitHub webhook handler. But everyone is welcome to contribute!

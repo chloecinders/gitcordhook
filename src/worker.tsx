@@ -16,6 +16,9 @@ import { ComponentType } from "discord-api-types/v10";
 import handleCreate from "./handlers/handleCreate";
 import handlePush from "./handlers/handlePush";
 import handlePullRequests from "./handlers/handlePullRequests";
+import handleDelete from "./handlers/handleDelete";
+import { TextDisplay } from "./components/TextDisplay";
+import Br from "./components/Br";
 
 export interface Env {}
 
@@ -26,7 +29,6 @@ export const DEFAULT_USER = {
 };
 
 function runHandler(githubEvent: string, data: WebhookEvent): WebhookBody {
-	console.log(githubEvent);
 	switch (githubEvent) {
 		case "issues": {
 			return handleIssues(data as any);
@@ -40,23 +42,26 @@ function runHandler(githubEvent: string, data: WebhookEvent): WebhookBody {
 			return handleCreate(data as any);
 		}
 
+		case "delete": {
+			return handleDelete(data as any);
+		}
+
 		case "push": {
 			return handlePush(data as any);
 		}
 
 		case "ping": {
 			return {
-				components: [
-					{
-						type: ComponentType.TextDisplay,
-						content: "# Webhook Ping!",
-					},
-					{
-						type: ComponentType.TextDisplay,
-						content:
-							"GitHub webhook setup successfully, using Webhook proxy by https://github.com/surgedevs/gitcordhook",
-					},
-				],
+				components: (
+					<>
+						<TextDisplay>
+							# Webhook Ping!
+							<Br />
+							GitHub webhook setup successfully, using Webhook proxy by
+							https://github.com/surgedevs/gitcordhook
+						</TextDisplay>
+					</>
+				),
 			};
 		}
 	}

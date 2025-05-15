@@ -8,8 +8,18 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
-		"noEmit": true
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "@",
+		"paths": {
+			"@/jsx-runtime": ["./src/components/runtime"]
+		}
 	},
-	"include": ["src", "worker-configuration.d.ts", "discord-types.d.ts"],
+	"include": [
+		"src",
+		"worker-configuration.d.ts",
+		"discord-types.d.ts",
+		"src/components"
+	],
 	"exclude": ["node_modules", "dist"]
 }
