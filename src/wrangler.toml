@@ -1,4 +1,4 @@
-name = "discord-webhook"
+name = "gitcordhook"
 main = "worker.tsx"
 compatibility_date = "2023-08-23"
 

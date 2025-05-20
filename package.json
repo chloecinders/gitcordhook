@@ -1,6 +1,6 @@
 {
-	"name": "discord-webhook",
-	"version": "0.0.0",
+	"name": "gitcordhook",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
@@ -10,7 +10,7 @@
 	"devDependencies": {
 		"esbuild": "^0.25.4",
 		"typescript": "^5.8.3",
-		"wrangler": "^4.14.4"
+		"wrangler": "^4.15.2"
 	},
 	"dependencies": {
 		"@octokit/webhooks-types": "^7.6.1",

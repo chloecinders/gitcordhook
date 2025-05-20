@@ -8,17 +8,17 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { WebhookEvent } from "@octokit/webhooks-types";
-import { send } from "./utils/discord";
-import handleIssues from "./handlers/handleIssues";
-import { WebhookBody, WebhookBodyWithHeaders } from "./types";
-import { ComponentType } from "discord-api-types/v10";
-import handleCreate from "./handlers/handleCreate";
-import handlePush from "./handlers/handlePush";
-import handlePullRequests from "./handlers/handlePullRequests";
-import handleDelete from "./handlers/handleDelete";
-import { TextDisplay } from "./components/TextDisplay";
+import { WebhookEvent, WebhookEvents } from "@octokit/webhooks-types";
 import Br from "./components/Br";
+import { TextDisplay } from "./components/TextDisplay";
+import handleCreate from "./handlers/handleCreate";
+import handleDelete from "./handlers/handleDelete";
+import handleIssues from "./handlers/handleIssues";
+import handlePullRequests from "./handlers/handlePullRequests";
+import handlePush from "./handlers/handlePush";
+import handleStar from "./handlers/handleStar";
+import { WebhookBody, WebhookBodyWithHeaders } from "./types";
+import { send } from "./utils/discord";
 
 export interface Env {}
 
@@ -28,7 +28,10 @@ export const DEFAULT_USER = {
 		"https://media.discordapp.net/attachments/1202351390484353046/1372294496456413294/443813695-80bf856e-a6e5-42fd-9e41-d0f5d346b4de.png?ex=68264057&is=6824eed7&hm=6e3f2a0ef679ba093c693255a03d182da1872f2f119a7bc9bea9a575b80eaf16&=&format=webp&quality=lossless",
 };
 
-function runHandler(githubEvent: string, data: WebhookEvent): WebhookBody {
+function runHandler(
+	githubEvent: WebhookEvents[0] | "ping",
+	data: WebhookEvent
+): WebhookBody {
 	switch (githubEvent) {
 		case "issues": {
 			return handleIssues(data as any);
@@ -48,6 +51,10 @@ function runHandler(githubEvent: string, data: WebhookEvent): WebhookBody {
 
 		case "push": {
 			return handlePush(data as any);
+		}
+
+		case "star": {
+			return handleStar(data as any);
 		}
 
 		case "ping": {
@@ -95,7 +102,7 @@ export default {
 		}
 
 		const eventType = request.headers.get("X-GitHub-Event");
-		const webhookBody = runHandler(eventType ?? "", json as any);
+		const webhookBody = runHandler(eventType ?? ("" as any), json as any);
 
 		if ("default" in webhookBody) {
 			webhookBody.headers = {
@@ -117,7 +124,11 @@ export default {
 		);
 
 		if (response.success) {
-			return new Response(`Discord Webhook Execute Success: ${response.body}`);
+			return new Response(
+				`Discord Webhook Execute Success; response body = ${
+					response.body
+				}, sent body = ${JSON.stringify(webhookBody)}`
+			);
 		}
 
 		return new Response(

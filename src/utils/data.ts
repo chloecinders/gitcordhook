@@ -10,7 +10,13 @@ export function getGithubUser(data: WebhookEvent & { sender: any }): {
 	};
 }
 
-export function parseGithubContent(content: string): string {
+export function parseGithubContent(repo_url: string, content: string): string {
 	// @TODO: Parse string for github issue/PR/whatever links, turn them into hypertext markup
+	const issueRegex = /#(\d+)(?=\s|[.,;:!?)]|$)/g;
+	content = content.replace(
+		issueRegex,
+		(_all, id: string) => `[#${id}](${repo_url}/issues/${id})`
+	);
+
 	return content;
 }

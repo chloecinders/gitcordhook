@@ -1,10 +1,10 @@
+import { APIActionRowComponent } from "discord-api-types/payloads";
 import {
 	APIButtonComponent,
 	APISelectMenuComponent,
 	ComponentType,
 } from "discord-api-types/v10";
 import { childrenToArray } from "./utils";
-import { APIActionRowComponent } from "discord-api-types/payloads";
 
 type MessageActionRowComponent = APIButtonComponent | APISelectMenuComponent;
 

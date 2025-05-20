@@ -1,8 +1,8 @@
 import { IssuesEvent, IssuesOpenedEvent } from "@octokit/webhooks-types";
 import { ButtonStyle, SeparatorSpacingSize } from "discord-api-types/v10";
-import { WebhookBody } from "../types";
-import { getGithubUser } from "../utils/data";
 import { ActionRow, Button, Separator, TextDisplay } from "../components";
+import { WebhookBody } from "../types";
+import { getGithubUser, parseGithubContent } from "../utils/data";
 
 export default function handleIssues(data: IssuesEvent): WebhookBody {
 	switch (data.action) {
@@ -15,14 +15,19 @@ export default function handleIssues(data: IssuesEvent): WebhookBody {
 }
 
 function issueOpen(data: IssuesOpenedEvent): WebhookBody {
-	const issueBody = (data.issue.body || "").slice(0, 1000);
+	const issueBody = parseGithubContent(
+		data.repository.html_url,
+		(data.issue.body || "").slice(0, 1000)
+	);
 
 	return {
 		...getGithubUser(data),
 		components: (
 			<>
 				<TextDisplay>
-					# Opened: {data.issue.title} @ {data.repository.full_name}
+					# Opened:{" "}
+					{parseGithubContent(data.repository.html_url, data.issue.title)} @{" "}
+					{data.repository.full_name}
 				</TextDisplay>
 
 				{data.issue.assignees.length && (

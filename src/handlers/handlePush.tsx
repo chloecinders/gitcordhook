@@ -1,12 +1,5 @@
 import { PushEvent } from "@octokit/webhooks-types";
-import { WebhookBody } from "../types";
-import { getGithubUser } from "../utils/data";
-import {
-	APIBaseComponent,
-	ButtonStyle,
-	ComponentType,
-} from "discord-api-types/v10";
-import { getTimestamp } from "../utils/discord";
+import { ButtonStyle } from "discord-api-types/v10";
 import {
 	ActionRow,
 	Button,
@@ -15,6 +8,9 @@ import {
 	TextDisplay,
 } from "../components";
 import Br from "../components/Br";
+import { WebhookBody } from "../types";
+import { getGithubUser } from "../utils/data";
+import { getTimestamp } from "../utils/discord";
 
 export default function handlePush(data: PushEvent): WebhookBody {
 	// @TODO: check if this is really necessary
