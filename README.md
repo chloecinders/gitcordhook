@@ -2,6 +2,8 @@
 An attempt to make GitHub Webhooks not boring.
 ***
 
+![image](https://github.com/user-attachments/assets/329342aa-7a11-41b3-ae5c-12089d509371)
+
 ## What is GitCordHook?
 GitCordHook is a webhook proxy that you add infront of your Discord webhook url inside the GitHub webhook settings, automatically transforming boring embeds with lacking information into rich messages using components V2.
 
