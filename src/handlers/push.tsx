@@ -32,37 +32,60 @@ function commitsPushed(data: PushEvent): WebhookBody {
                     {data.after.slice(0, 7)}`
                 </TextDisplay>
 
-                {...data.commits.map((commit) => (
-                    <Container>
-                        <Section
-                            accessory={
-                                <Button
-                                    url={commit.url}
-                                    style={ButtonStyle.Link}
-                                >
-                                    Open commit
-                                </Button>
-                            }
-                        >
-                            <TextDisplay>
-                                ##{" "}
-                                {commit.author.username || commit.author.name}:{" "}
-                                {commit.message}
-                                <Br />
-                                ID: `{commit.id.slice(0, 7)}` Tree:{" "}
-                                {commit.tree_id.slice(0, 7)} At:{" "}
-                                {getTimestamp(commit.timestamp)}
-                                <Br />
-                                ```diff
-                                <Br />
-                                {commit.added.map((a) => `+${a}\n`)}
-                                {commit.modified.map((m) => `~${m}\n`)}
-                                {commit.removed.map((r) => `-${r}\n`)}
-                                ```
-                            </TextDisplay>
-                        </Section>
-                    </Container>
-                ))}
+                {...data.commits.map((commit) => {
+                    console.log(commit.modified);
+                    const commitTextSplit = commit.message.split("\n");
+                    const commitTitle = commitTextSplit.shift();
+                    const commitBody = commitTextSplit.join(<Br />);
+
+                    return (
+                        <Container>
+                            <Section
+                                accessory={
+                                    <Button
+                                        url={commit.url}
+                                        style={ButtonStyle.Link}
+                                    >
+                                        Open commit
+                                    </Button>
+                                }
+                            >
+                                <TextDisplay>
+                                    ##{" "}
+                                    {commit.author.username ||
+                                        commit.author.name}
+                                    : {commitTitle}
+                                    {...!!commitBody ? (
+                                        <>
+                                            <Br />
+                                            {commitBody}
+                                            <Br />
+                                        </>
+                                    ) : (
+                                        <></>
+                                    )}
+                                    <Br />
+                                    ID: `{commit.id.slice(0, 7)}` Tree:{" "}
+                                    {commit.tree_id.slice(0, 7)} At:{" "}
+                                    {getTimestamp(commit.timestamp)}
+                                    <Br />
+                                    ```diff
+                                    <Br />
+                                    {commit.added
+                                        .map((a) => `+${a}`)
+                                        .join(<Br />)}
+                                    {commit.modified
+                                        .map((m) => `~${m}`)
+                                        .join(<Br />)}
+                                    {commit.removed
+                                        .map((r) => `-${r}`)
+                                        .join(<Br />)}
+                                    ```
+                                </TextDisplay>
+                            </Section>
+                        </Container>
+                    );
+                })}
 
                 <ActionRow>
                     <Button url={data.compare} style={ButtonStyle.Link}>
