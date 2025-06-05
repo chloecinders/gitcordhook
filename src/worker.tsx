@@ -17,6 +17,7 @@ import handleIssues from "./handlers/issues";
 import handlePullRequests from "./handlers/pullRequests";
 import handlePush from "./handlers/push";
 import handleStar from "./handlers/star";
+import handleWatch from "./handlers/watch";
 import { WebhookBody, WebhookBodyWithHeaders } from "./types";
 import { send } from "./utils/discord";
 
@@ -55,6 +56,10 @@ function runHandler(
 
         case "star": {
             return handleStar(data as any);
+        }
+
+        case "watch": {
+            return handleWatch(data as any);
         }
 
         case "ping": {
