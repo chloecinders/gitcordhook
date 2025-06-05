@@ -14,4 +14,4 @@ jobs:
           yarn prettier src --write
       - uses: autofix-ci/action@v1
         with:
-          commit-message: "Apply Prettier format"
+          commit-message: "ci: apply prettier format"
