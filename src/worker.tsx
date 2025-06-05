@@ -11,133 +11,141 @@
 import { WebhookEvent, WebhookEvents } from "@octokit/webhooks-types";
 import Br from "./components/Br";
 import { TextDisplay } from "./components/TextDisplay";
-import handleCreate from "./handlers/handleCreate";
-import handleDelete from "./handlers/handleDelete";
-import handleIssues from "./handlers/handleIssues";
-import handlePullRequests from "./handlers/handlePullRequests";
-import handlePush from "./handlers/handlePush";
-import handleStar from "./handlers/handleStar";
+import handleCreate from "./handlers/create";
+import handleDelete from "./handlers/delete";
+import handleIssues from "./handlers/issues";
+import handlePullRequests from "./handlers/pullRequests";
+import handlePush from "./handlers/push";
+import handleStar from "./handlers/star";
 import { WebhookBody, WebhookBodyWithHeaders } from "./types";
 import { send } from "./utils/discord";
 
 export interface Env {}
 
 export const DEFAULT_USER = {
-	username: "GitCordHook [META]",
-	avatar_url:
-		"https://media.discordapp.net/attachments/1202351390484353046/1372294496456413294/443813695-80bf856e-a6e5-42fd-9e41-d0f5d346b4de.png?ex=68264057&is=6824eed7&hm=6e3f2a0ef679ba093c693255a03d182da1872f2f119a7bc9bea9a575b80eaf16&=&format=webp&quality=lossless",
+    username: "GitCordHook [META]",
+    avatar_url:
+        "https://media.discordapp.net/attachments/1202351390484353046/1372294496456413294/443813695-80bf856e-a6e5-42fd-9e41-d0f5d346b4de.png?ex=68264057&is=6824eed7&hm=6e3f2a0ef679ba093c693255a03d182da1872f2f119a7bc9bea9a575b80eaf16&=&format=webp&quality=lossless",
 };
 
 function runHandler(
-	githubEvent: WebhookEvents[0] | "ping",
-	data: WebhookEvent
+    githubEvent: WebhookEvents[0] | "ping",
+    data: WebhookEvent
 ): WebhookBody {
-	switch (githubEvent) {
-		case "issues": {
-			return handleIssues(data as any);
-		}
+    switch (githubEvent) {
+        case "issues": {
+            return handleIssues(data as any);
+        }
 
-		case "pull_request": {
-			return handlePullRequests(data as any);
-		}
+        case "pull_request": {
+            return handlePullRequests(data as any);
+        }
 
-		case "create": {
-			return handleCreate(data as any);
-		}
+        case "create": {
+            return handleCreate(data as any);
+        }
 
-		case "delete": {
-			return handleDelete(data as any);
-		}
+        case "delete": {
+            return handleDelete(data as any);
+        }
 
-		case "push": {
-			return handlePush(data as any);
-		}
+        case "push": {
+            return handlePush(data as any);
+        }
 
-		case "star": {
-			return handleStar(data as any);
-		}
+        case "star": {
+            return handleStar(data as any);
+        }
 
-		case "ping": {
-			return {
-				components: (
-					<>
-						<TextDisplay>
-							# Webhook Ping!
-							<Br />
-							GitHub webhook setup successfully, using Webhook proxy by
-							https://github.com/surgedevs/gitcordhook
-						</TextDisplay>
-					</>
-				),
-			};
-		}
-	}
+        case "ping": {
+            return {
+                components: (
+                    <>
+                        <TextDisplay>
+                            # Webhook Ping!
+                            <Br />
+                            GitHub webhook setup successfully, using Webhook
+                            proxy by https://github.com/surgedevs/gitcordhook
+                        </TextDisplay>
+                    </>
+                ),
+            };
+        }
+    }
 
-	return { default: data };
+    return { default: data };
 }
 
 export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
-		if (request.method == "GET") {
-			return new Response(
-				"Hey you aren't a webhook! This page is only for webhooks! See https://github.com/surgedevs/gitcordhook for more info :D"
-			);
-		}
+    async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+        if (request.method == "GET") {
+            return new Response(
+                "Hey you aren't a webhook! This page is only for webhooks! See https://github.com/surgedevs/gitcordhook for more info :D"
+            );
+        }
 
-		const webhookUrl = new URL(request.url);
-		const discordWebhook = webhookUrl.pathname.replace(
-			/^\/https:\/\//,
-			"https://"
-		);
+        const webhookUrl = new URL(request.url);
+        const discordWebhook = webhookUrl.pathname.replace(
+            /^\/https:\/\//,
+            "https://"
+        );
 
-		let json = null;
+        let json = null;
 
-		try {
-			json = await request.json();
-		} catch (exception) {
-			await send(discordWebhook, {
-				content:
-					"You must select application/json inside the Github webhook settings!",
-			});
-		}
+        try {
+            json = await request.json();
+        } catch (exception) {
+            await send(discordWebhook, {
+                content:
+                    "You must select application/json inside the Github webhook settings!",
+            });
+        }
 
-		const eventType = request.headers.get("X-GitHub-Event");
-		const webhookBody = runHandler(eventType ?? ("" as any), json as any);
+        const eventType = request.headers.get("X-GitHub-Event");
+        const webhookBody = runHandler(eventType ?? ("" as any), json as any);
 
-		if ("default" in webhookBody) {
-			webhookBody.headers = {
-				"X-GitHub-Delivery": request.headers.get("X-GitHub-Delivery"),
-				"X-GitHub-Event": request.headers.get("X-GitHub-Event"),
-				"X-GitHub-Hook-ID": request.headers.get("X-GitHub-Hook-ID"),
-				"X-GitHub-Hook-Installation-Target-ID": request.headers.get(
-					"X-GitHub-Hook-Installation-Target-ID"
-				),
-				"X-GitHub-Hook-Installation-Target-Type": request.headers.get(
-					"X-GitHub-Hook-Installation-Target-Type"
-				),
-			};
-		}
+        if ("none" in webhookBody) {
+            return new Response(
+                `Discord Webhook Execute Success; Event intentionally skipped! Reason: ${
+                    webhookBody.reason ? webhookBody.reason : "None provided"
+                }`
+            );
+        }
 
-		const response = await send(
-			discordWebhook,
-			webhookBody as WebhookBodyWithHeaders
-		);
+        if ("default" in webhookBody) {
+            webhookBody.headers = {
+                "X-GitHub-Delivery": request.headers.get("X-GitHub-Delivery"),
+                "X-GitHub-Event": request.headers.get("X-GitHub-Event"),
+                "X-GitHub-Hook-ID": request.headers.get("X-GitHub-Hook-ID"),
+                "X-GitHub-Hook-Installation-Target-ID": request.headers.get(
+                    "X-GitHub-Hook-Installation-Target-ID"
+                ),
+                "X-GitHub-Hook-Installation-Target-Type": request.headers.get(
+                    "X-GitHub-Hook-Installation-Target-Type"
+                ),
+            };
+        }
 
-		if (response.success) {
-			return new Response(
-				`Discord Webhook Execute Success; response body = ${
-					response.body
-				}, sent body = ${JSON.stringify(webhookBody)}`
-			);
-		}
+        const response = await send(
+            discordWebhook,
+            webhookBody as WebhookBodyWithHeaders
+        );
 
-		return new Response(
-			`Discord Webhook Execute Failed; response body = ${
-				response.body
-			}, sent body = ${JSON.stringify(webhookBody)}`,
-			{
-				status: 500,
-			}
-		);
-	},
+        if (response.success) {
+            return new Response(
+                `Discord Webhook Execute Success; response body = ${
+                    response.body
+                }, sent body = ${JSON.stringify(webhookBody)}`
+            );
+        }
+
+        return new Response(
+            `Discord Webhook Execute Failed; response body = ${
+                response.body
+            }, sent body = ${JSON.stringify(webhookBody)}`,
+            {
+                status: 500,
+            }
+        );
+    },
 };
