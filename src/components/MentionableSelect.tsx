@@ -1,18 +1,18 @@
 import {
-	APIMentionableSelectComponent,
-	ComponentType,
+    APIMentionableSelectComponent,
+    ComponentType,
 } from "discord-api-types/v10";
 
 export type MentionableSelectProps = Omit<
-	APIMentionableSelectComponent,
-	"type"
+    APIMentionableSelectComponent,
+    "type"
 >;
 
 export function MentionableSelect(
-	props: MentionableSelectProps
+    props: MentionableSelectProps
 ): APIMentionableSelectComponent {
-	return {
-		type: ComponentType.MentionableSelect,
-		...props,
-	};
+    return {
+        type: ComponentType.MentionableSelect,
+        ...props,
+    };
 }

@@ -1,16 +1,16 @@
 import { APIThumbnailComponent, ComponentType } from "discord-api-types/v10";
 
 export type ThumbnailProps = Omit<APIThumbnailComponent, "type" | "media"> & {
-	children: APIThumbnailComponent["media"];
+    children: APIThumbnailComponent["media"];
 };
 
 export function Thumbnail({
-	children,
-	...props
+    children,
+    ...props
 }: ThumbnailProps): APIThumbnailComponent {
-	return {
-		type: ComponentType.Thumbnail,
-		media: children,
-		...props,
-	};
+    return {
+        type: ComponentType.Thumbnail,
+        media: children,
+        ...props,
+    };
 }

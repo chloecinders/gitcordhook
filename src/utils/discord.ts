@@ -1,59 +1,59 @@
 import {
-	MessageFlags,
-	RESTPostAPIWebhookWithTokenJSONBody,
+    MessageFlags,
+    RESTPostAPIWebhookWithTokenJSONBody,
 } from "discord-api-types/v10";
 import { WebhookBodyWithHeaders } from "../types";
 import { DEFAULT_USER } from "../worker";
 
 type WebhookResponse = {
-	success: boolean;
-	body: string;
+    success: boolean;
+    body: string;
 };
 
 export async function send(
-	url: string,
-	options: WebhookBodyWithHeaders
+    url: string,
+    options: WebhookBodyWithHeaders
 ): Promise<WebhookResponse> {
-	options = { ...options, flags: MessageFlags.IsComponentsV2 };
+    options = { ...options, flags: MessageFlags.IsComponentsV2 };
 
-	if (!("avatar_url" in options) && !("name" in options)) {
-		options = { ...options, ...DEFAULT_USER };
-	}
+    if (!("avatar_url" in options) && !("name" in options)) {
+        options = { ...options, ...DEFAULT_USER };
+    }
 
-	if ("default" in options && "headers" in options) {
-		const response = await fetch(url + "/github", {
-			method: "POST",
-			body: JSON.stringify(options.default),
-			headers: {
-				"content-type": "application/json",
-				...(options.headers || {}),
-			},
-		});
+    if ("default" in options && "headers" in options) {
+        const response = await fetch(url + "/github", {
+            method: "POST",
+            body: JSON.stringify(options.default),
+            headers: {
+                "content-type": "application/json",
+                ...(options.headers || {}),
+            },
+        });
 
-		return {
-			success: response.ok,
-			body: JSON.stringify(response),
-		};
-	}
+        return {
+            success: response.ok,
+            body: JSON.stringify(response),
+        };
+    }
 
-	url = url + "?with_components=true";
+    url = url + "?with_components=true";
 
-	const response = await fetch(url, {
-		method: "POST",
-		body: JSON.stringify(options),
-		headers: {
-			"content-type": "application/json",
-		},
-	});
+    const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(options),
+        headers: {
+            "content-type": "application/json",
+        },
+    });
 
-	return {
-		success: response.ok,
-		body: await response.text(),
-	};
+    return {
+        success: response.ok,
+        body: await response.text(),
+    };
 }
 
 export function getTimestamp(timeString: string): string {
-	const date = new Date(timeString);
+    const date = new Date(timeString);
 
-	return `<t:${Math.floor(date.getTime()) / 1000}:f>`;
+    return `<t:${Math.floor(date.getTime()) / 1000}:f>`;
 }
