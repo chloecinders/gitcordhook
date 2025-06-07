@@ -71,12 +71,14 @@ function commitsPushed(data: PushEvent): WebhookBody {
                                     <Br />
                                     ```diff
                                     <Br />
-                                    {commit.added
-                                        .map((a) => `+${a}`)
-                                        .join(<Br />)}
-                                    {commit.modified
-                                        .map((m) => `~${m}`)
-                                        .join(<Br />)}
+                                    {commit.added.length &&
+                                        commit.added
+                                            .map((a) => `+${a}`)
+                                            .join(<Br />) + <Br />}
+                                    {commit.modified.length &&
+                                        commit.modified
+                                            .map((m) => `~${m}`)
+                                            .join(<Br />) + <Br />}
                                     {commit.removed
                                         .map((r) => `-${r}`)
                                         .join(<Br />)}
