@@ -8,7 +8,17 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { WebhookEvent, WebhookEvents } from "@octokit/webhooks-types";
+import {
+    CreateEvent,
+    DeleteEvent,
+    IssuesEvent,
+    PullRequestEvent,
+    PushEvent,
+    StarEvent,
+    WatchEvent,
+    WebhookEvent,
+    WebhookEvents,
+} from "@octokit/webhooks-types";
 import Br from "./components/Br";
 import { TextDisplay } from "./components/TextDisplay";
 import handleCreate from "./handlers/create";
@@ -32,34 +42,34 @@ export const DEFAULT_USER = {
 function runHandler(
     githubEvent: WebhookEvents[0] | "ping",
     data: WebhookEvent
-): WebhookBody {
+): WebhookBody | Promise<WebhookBody> {
     switch (githubEvent) {
         case "issues": {
-            return handleIssues(data as any);
+            return handleIssues(data as IssuesEvent);
         }
 
         case "pull_request": {
-            return handlePullRequests(data as any);
+            return handlePullRequests(data as PullRequestEvent);
         }
 
         case "create": {
-            return handleCreate(data as any);
+            return handleCreate(data as CreateEvent);
         }
 
         case "delete": {
-            return handleDelete(data as any);
+            return handleDelete(data as DeleteEvent);
         }
 
         case "push": {
-            return handlePush(data as any);
+            return handlePush(data as PushEvent);
         }
 
         case "star": {
-            return handleStar(data as any);
+            return handleStar(data as StarEvent);
         }
 
         case "watch": {
-            return handleWatch(data as any);
+            return handleWatch(data as WatchEvent);
         }
 
         case "ping": {
@@ -95,6 +105,8 @@ export default {
             "https://"
         );
 
+        globalThis.DiscordWebhookURL = discordWebhook;
+
         let json = null;
 
         try {
@@ -107,7 +119,13 @@ export default {
         }
 
         const eventType = request.headers.get("X-GitHub-Event");
-        const webhookBody = runHandler(eventType ?? ("" as any), json as any);
+        let webhookBody = runHandler(eventType ?? ("" as any), json as any);
+
+        if (webhookBody instanceof Promise) {
+            webhookBody = await webhookBody;
+        }
+
+        console.log(webhookBody);
 
         if ("none" in webhookBody) {
             return new Response(

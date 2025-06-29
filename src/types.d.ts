@@ -9,3 +9,7 @@ type WebhookBodyWithHeaders =
     | RESTPostAPIWebhookWithTokenJSONBody
     | { default: any; headers: any }
     | { none: true; reason?: string };
+
+declare global {
+    var DiscordWebhookURL: string = "";
+}

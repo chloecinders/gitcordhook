@@ -1,12 +1,12 @@
-import { CreateEvent } from "@octokit/webhooks-types";
+import { DeleteEvent } from "@octokit/webhooks-types";
+import { ButtonStyle, SeparatorSpacingSize } from "discord-api-types/v10";
+import { Button, TextDisplay } from "../components";
+import { ActionRow } from "../components/ActionRow";
+import { Separator } from "../components/Separator";
 import { WebhookBody } from "../types";
 import { getGithubUser } from "../utils/data";
-import { Separator } from "../components/Separator";
-import { ButtonStyle, SeparatorSpacingSize } from "discord-api-types/v10";
-import { ActionRow } from "../components/ActionRow";
-import { Button, TextDisplay } from "../components";
 
-export default function handleDelete(data: CreateEvent): WebhookBody {
+export default function handleDelete(data: DeleteEvent): WebhookBody {
     switch (data.ref_type) {
         case "branch": {
             return branchDelete(data);
@@ -16,7 +16,7 @@ export default function handleDelete(data: CreateEvent): WebhookBody {
     return { default: data };
 }
 
-function branchDelete(data: CreateEvent): WebhookBody {
+function branchDelete(data: DeleteEvent): WebhookBody {
     return {
         ...getGithubUser(data),
         components: (
